@@ -1,0 +1,5 @@
+include ':tts'
+include ':xf_tts'
+include ':app'
+rootProject.name = "VoiceTTS"
+include ':xfapp'
