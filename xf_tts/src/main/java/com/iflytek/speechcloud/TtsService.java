@@ -9,8 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.iflytek.business.SpeechConfig;
-import com.iflytek.speechcloud.binder.impl.AiConstants;
-import com.iflytek.speechcloud.binder.impl.LocalTtsPlayer;
+import com.iflytek.speechcloud.tts.impl.AiConstants;
 import com.iflytek.speechcloud.tts.impl.AisoundEngine;
 import com.iflytek.speechcloud.tts.interfaces.IAisoundListener;
 
@@ -48,9 +47,9 @@ public class TtsService {
         this.mSavedRole = name;
         String resPath = "aisound/" + name + AiConstants.TTS_RESOURCE_AUFFIX_MP3;
         Intent intent = new Intent();
-        intent.putExtra(LocalTtsPlayer.STANDERD_VOICE_NAME, resPath);
+        intent.putExtra(AiConstants.STANDERD_VOICE_NAME, resPath);
         AisoundEngine.reset();//重置engine状态
-        this.mAisound = AisoundEngine.getEngine(context, LocalTtsPlayer.STANDARD, intent);//初始化AisoundEngine
+        this.mAisound = AisoundEngine.getEngine(context, intent);//初始化AisoundEngine
     }
 
     public void onDestroy() {
@@ -119,9 +118,9 @@ public class TtsService {
         String newRole = SpeechConfig.getString(context, SpeechConfig.KEY_SPEAKER_SETTING, "xiaoyan");
         String resPath = "aisound/" + newRole + AiConstants.TTS_RESOURCE_AUFFIX_MP3;
         Intent intent = new Intent();
-        intent.putExtra(LocalTtsPlayer.STANDERD_VOICE_NAME, resPath);
+        intent.putExtra(AiConstants.STANDERD_VOICE_NAME, resPath);
         AisoundEngine.reset();
-        this.mAisound = AisoundEngine.getEngine(context, LocalTtsPlayer.STANDARD, intent);
+        this.mAisound = AisoundEngine.getEngine(context, intent);
         this.mSavedRole = newRole;
         this.mCallback = callback;
         Log.e(TAG, "onSynthesizeText---3--");

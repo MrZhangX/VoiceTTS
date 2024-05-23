@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.iflytek.aisound.Aisound;
-import com.iflytek.speechcloud.binder.impl.AiConstants;
-import com.iflytek.speechcloud.binder.impl.LocalTtsPlayer;
 import com.iflytek.speechcloud.tts.interfaces.IAisoundListener;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,28 +16,26 @@ public class AisoundEngine implements Aisound.IAisoundCallback {
     private IAisoundListener mAisoundListener;
     private TtsResource mCommResource = null;
     private Context mContext = null;
-    private String mResMode = LocalTtsPlayer.STANDARD;
     private Intent mResPathOrName = null;
     private TtsResource mSpeekerResource = null;
     private ReentrantLock mTtsLock = new ReentrantLock();
     private int mWatchType;
     private Object synObj = new Object();
 
-    public static synchronized AisoundEngine getEngine(Context ctx, String rm, Intent respath) {
+    public static synchronized AisoundEngine getEngine(Context ctx, Intent respath) {
         AisoundEngine aisoundEngine;
         synchronized (AisoundEngine.class) {
             if (mInstance == null) {
-                mInstance = new AisoundEngine(ctx, rm, respath);
+                mInstance = new AisoundEngine(ctx, respath);
             }
             aisoundEngine = mInstance;
         }
         return aisoundEngine;
     }
 
-    private AisoundEngine(Context ctx, String rm, Intent respath) {
+    private AisoundEngine(Context ctx, Intent respath) {
         synchronized (this.synObj) {
             this.mContext = ctx;
-            this.mResMode = rm;
             this.mResPathOrName = respath;
             Aisound.setAisoundCallbak(this);
             init();
@@ -50,11 +46,11 @@ public class AisoundEngine implements Aisound.IAisoundCallback {
         Log.e(TAG, "AisoundEngine.init res dir ====== " + this.mResPathOrName);
         if (this.mCommResource == null) {
             Intent intent = new Intent();
-            intent.putExtra(LocalTtsPlayer.STANDERD_VOICE_NAME, AiConstants.DEFAULT_VOICE_RES);
-            this.mCommResource = new TtsResource(this.mContext, this.mResMode, intent);
+            intent.putExtra(AiConstants.STANDERD_VOICE_NAME, AiConstants.DEFAULT_VOICE_RES);
+            this.mCommResource = new TtsResource(this.mContext, intent);
         }
         if (this.mSpeekerResource == null) {
-            this.mSpeekerResource = new TtsResource(this.mContext, this.mResMode, this.mResPathOrName);
+            this.mSpeekerResource = new TtsResource(this.mContext, this.mResPathOrName);
             Log.e(TAG, "init res dir = " + this.mResPathOrName);
         }
         this.initCode = Aisound.create("");
